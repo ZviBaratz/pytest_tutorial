@@ -33,3 +33,20 @@ def test_rtanalysis_checkfail(simulated_data, params):
         rta.fit(
             simulated_data.rt, simulated_data.accuracy.loc[1:]
         )  # omit first datapoint
+
+
+# Exercise
+
+
+def test_rtanalysis_fit_with_cutoff(simulated_data, params):
+    rta = RTAnalysis(outlier_cutoff_sd=2)
+    rta.fit(simulated_data.rt, simulated_data.accuracy)
+    assert np.allclose(params["meanAcc"], rta.meanacc_)
+    assert params["meanRT"] > rta.meanrt_
+
+
+def test_rtanalysis_fit_with_nonseries(simulated_data, params):
+    rta = RTAnalysis()
+    rta.fit(simulated_data.rt.to_numpy(), simulated_data.accuracy.to_numpy())
+    assert np.allclose(params["meanRT"], rta.meanrt_)
+    assert np.allclose(params["meanAcc"], rta.meanacc_)
